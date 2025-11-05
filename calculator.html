@@ -630,20 +630,17 @@ function renderCoalition(){
     ? parties.map(p=>({ name: p.name, seats: Number(p.final || 0), color: p.color }))
     : datasets[1];
 
+// build legend (only show parties with seats)
+legend.innerHTML = "";
+coalitionParties
+  .filter(p => Number(p.seats) > 0) // 👈 only parties that actually have seats
+  .forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'legend-item' + (selected.includes(p.name) ? ' active' : '');
+    item.innerHTML = `<div class="legend-box" style="background:${p.color}"></div> <strong>${p.name}</strong> ${p.seats}`;
+    item.onclick = () => toggleParty(p.name);
+    legend.appendChild(item);
   });
-
-  // build legend (only show parties with seats)
-  legend.innerHTML = "";
-  coalitionParties
-    .filter(p => Number(p.seats) > 0)
-    .forEach(p => {
-      const item = document.createElement('div');
-      item.className = 'legend-item' + (selected.includes(p.name) ? ' active' : '');
-      item.innerHTML = `<div class="legend-box" style="background:${p.color}"></div> <strong>${p.name}</strong> ${p.seats}`;
-      item.onclick = () => toggleParty(p.name);
-      legend.appendChild(item);
-    });
-
 
   // total selected & draw overlay
   const totalSeatsSelected = selected.reduce((sum,name)=>{
