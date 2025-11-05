@@ -630,10 +630,6 @@ function renderCoalition(){
     ? parties.map(p=>({ name: p.name, seats: Number(p.final || 0), color: p.color }))
     : datasets[1];
 
-  // 👇 Optional enhancement: remove zero-seat parties from selection
-  selected = selected.filter(name => {
-    const p = coalitionParties.find(x => x.name === name);
-    return p && p.seats > 0;
   });
 
   // build legend (only show parties with seats)
