@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🇸🇰 Slovakia | Seat Calculator</title>
+
+<!-- Primary Meta Tags -->
+<meta name="title" content="🇸🇰 Slovakia | Interactive Seat Calculator">
+<meta name="description" content="">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nowcast-eu.github.io/Slovakia/calculator.html">
+<meta property="og:title" content="🇸🇰 Slovakia | Interactive Seat Calculator">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://nowcast-eu.github.io/Slovakia/thumbnail.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary">
+<meta property="twitter:url" content="https://nowcast-eu.github.io/Slovakia/calculator.html">
+<meta property="twitter:title" content="🇸🇰 Slovakia | Interactive Seat Calculator">
+<meta property="twitter:description" content="">
+<meta property="twitter:image" content="https://nowcast-eu.github.io/Slovakia/thumbnail.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="SK_favicon.png" />
+
+<style>
+  :root{
+    --main-bar-h: 117px;
+  }
+
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: #fff;
+    color: #0f172a;
+    margin: 0;
+    padding: 24px;
+  }
+
+  /* ---- Title ---- */
+  h1 {
+    text-align: center;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    font-size: 22px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    table-layout: fixed;
+  }
+  th, td {
+    padding: 8px 6px;              /* ↑ increased padding for consistent height */
+    border: 1px solid #e2e8f0;
+    overflow-wrap: break-word;
+    height: 36px;                  /* ensures header equals row height */
+  }
+  th {
+    background: #f1f5f9;
+    font-weight: 600;
+    text-align: left;
+    vertical-align: middle;        /* centers text vertically */
+  }
+  td.party-column {
+    font-weight: bold;
+    position: relative;
+    padding-left: 14px;
+    color: black;
+  }
+  td.party-column::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 8px;
+    height: 100%;
+    border-radius: 2px 0 0 2px;
+    background-color: var(--party-color);
+  }
+  td.ge2024-column {
+    font-style: italic;
+    color: #999;
+  }
+  td.seats-column, td.change-column {
+    font-weight: bold;
+    text-align: center;
+    width: 75px;
+  }
+  td.change-column { font-weight: bold; }
+
+  /* -- rest of your existing styles unchanged -- */
+  /* (you can safely keep everything below identical to your version) */
+</style>
+</head>
+
+<body>
+
+<h1>Slovakia | @Nowcast_EU Interactive Seat Calculator</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PR Calculator + Coalition Builder</title>
+<style>
+  :root{
+    --main-bar-h: 117px; /* used to size the mini coalition bars */
+  }
+
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: #fff;
+    color: #0f172a;
+    margin: 0;
+    padding: 24px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    table-layout: fixed; /* ensures equal widths for numeric columns */
+  }
+  th, td {
+    padding: 4px 6px;
+    border: 1px solid #e2e8f0;
+    overflow-wrap: break-word;
+  }
+  th {
+    background: #f1f5f9;
+    font-weight: 600;
+    text-align: left;
+  }
+  td.party-column {
+    font-weight: bold;
+    position: relative;
+    padding-left: 14px;
+    color: black;
+  }
+  td.party-column::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    border-radius: 2px 0 0 2px;
+    background-color: var(--party-color);
+  }
+  td.ge2024-column {
+    font-style: italic;
+    color: #999999;
+  }
+  td.seats-column,
+  td.change-column {
+    font-weight: bold;
+    text-align: center;
+    width: 75px; /* Equal column widths */
+  }
+  td.change-column { font-weight: bold; }
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  .input-wrapper input {
+    width: 50px;
+    padding: 4px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    text-align: left;
+    margin-right: 4px;
+    transition: border-color 0.3s ease;
+  }
+  .percent-sign { font-size: 14px; }
+
+  .button-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  button#calculate, button#reset {
+    background: #008500;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button#calculate { flex: 0 0 80%; }
+  button#reset { flex: 0 0 20%; }
+
+  tfoot td {
+    font-weight: bold;
+    text-align: center;
+    background: #f1f5f9;
+  }
+  tfoot td:first-child { text-align: left; padding-left: 14px; }
+
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
+  /* --- Table layout --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* keeps column widths consistent */
+}
+
+/* --- Header row --- */
+th {
+  text-align: center;      /* center text horizontally */
+  font-weight: bold;       /* make text bold */
+  height: 28px;            /* 👈 adjust header height manually */
+  vertical-align: middle;  /* center vertically too */
+}
+
+/* --- Main body rows --- */
+td {
+  height: 28px;            /* 👈 adjust main row height manually */
+  vertical-align: middle;  /* keep text vertically centered */
+  padding: 4px;            /* optional spacing */
+}
+
+/* --- Footer row (e.g., totals) --- */
+tfoot td {
+  height: 16px;            /* 👈 adjust footer height manually */
+  font-weight: bold;       /* optional */
+}
+
+
+  /* ---------------- Coalition Builder Styles ---------------- */
+  #coalition-builder { margin-top: 48px; }
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  h3 { margin: 0; }
+  .tab-switcher { position: relative; display: flex; background: #f3f3f3; border-radius: 12px; border: 1px solid #ccc; overflow: hidden; height: 34px; min-width: 140px; }
+  .tab-button {
+    flex: 1;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.25s ease;
+    z-index: 1;
+    position: relative;
+  }
+  .tab-button.active { color: #000; }
+  .tab-slider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    transition: transform 0.25s ease;
+    z-index: 0;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 15px; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 10px;
+    background: #f3f3f3;
+    transition: all 0.25s ease;
+    opacity: 0.6;
+    font-weight: normal;
+  }
+  .legend-item:hover { transform: translateY(-1px); }
+  .legend-item.active { opacity: 1; background: #ffffff; border-color: #999; box-shadow: 0 1px 3px rgba(0,0,0,0.15); font-weight: bold; }
+  .legend-box { width: 20px; height: 20px; border-radius: 4px; }
+  .bar-container { position: relative; height: var(--main-bar-h); background: #f0f0f0; border-radius: 10px; overflow: hidden; margin-bottom: 12px; width: 100%; }
+  .coalition-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 0%; border-radius: 10px 0 0 10px; display: flex; overflow: hidden; transition: width 1s ease; }
+  .segment { height: 100%; flex-shrink: 0; border-radius: 0; }
+  .majority-line { position: absolute; top: 0; bottom: 0; width: 2px; background: repeating-linear-gradient(to bottom,#333,#333 5px,transparent 5px,transparent 10px); left: 50%; }
+  .counter { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 8px; }
+  .note { font-size: 13px; color: #555; text-align: center; }
+
+  /* -------- Divider with overlay title -------- */
+  .section-divider {
+    position: relative;
+    margin: 28px 0 18px;
+    text-align: center;
+  }
+  .section-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: #555555;
+    transform: translateY(-50%);
+  }
+  .section-divider span {
+    position: relative;
+    display: inline-block;
+    padding: 0 10px;
+    background: #ffffff; /* hides the line beneath the text */
+    color: #555555;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+  }
+
+  /* -------- Mini coalition list -------- */
+  #coalition-list { width: 100%; }
+  .coalition-block {
+    margin-bottom: calc(var(--main-bar-h) / 4); /* quarter-height gap */
+  }
+  .coal-label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #333;
+    font-weight: 600;
+  }
+  .coal-flex {
+    display: grid;
+    grid-template-columns: 1fr auto; /* bar then icon */
+    align-items: center;
+    gap: 8px;
+  }
+  .mini-bar {
+    position: relative;
+    background: #f0f0f0;
+    border-radius: 10px;
+    height: calc(var(--main-bar-h) / 2); /* half of main bar */
+    overflow: hidden;
+    width: 100%;
+  }
+  .mini-overlay {
+    position: absolute;
+    top: 0; left: 0; height: 100%;
+    width: 0%;
+    display: flex;
+    border-radius: 10px 0 0 10px;
+    overflow: hidden;
+    transition: width 0.8s ease;
+  }
+  .mini-total {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  color: #000000;
+  text-shadow:
+    -1.0px -1.0px 0 #ffffff,
+     1.0px -1.0px 0 #ffffff,
+    -1.0px  1.0px 0 #ffffff,
+     1.0px  1.0px 0 #ffffff;
+  pointer-events: none;
+}
+  .coal-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+  }
+  .mini-seg { height: 100%; flex-shrink: 0; }
+
+  /* ---------------- Responsive Scaling for Mobile ---------------- */
+  @media (max-width: 768px) {
+    body {
+      padding: 12px;
+      font-size: 14px;
+    }
+    table th, table td {
+      font-size: 13px;
+      padding: 3px 4px;
+    }
+    .input-wrapper input {
+      width: 42px;
+      font-size: 13px;
+      padding: 3px;
+    }
+    button#calculate, button#reset {
+      font-size: 14px;
+      padding: 7px 10px;
+    }
+    h3 { font-size: 16px; }
+    .legend-item {
+      font-size: 13px;
+      gap: 6px;
+      padding: 4px 8px;
+    }
+    .counter { font-size: 18px; }
+    .section-divider span { font-size: 13px; }
+    .coal-label { font-size: 13px; }
+  }
+
+  @media (max-width: 420px) {
+    body { font-size: 12px; }
+    table th, table td { font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ---------------- Tiered PR Calculator ---------------- -->
+<table>
+  <thead>
+    <tr>
+      <th>Party</th>
+      <th>2024</th>
+      <th>Votes (%)</th>
+      <th>Seats</th>
+      <th>+/- 2024</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+  <tfoot>
+    <tr>
+      <td>Totals</td>
+      <td></td>
+      <td id="total-votes">0.0%</td>
+      <td id="total-seats">0</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+
+<div class="button-container">
+  <button id="calculate">Calculate</button>
+  <button id="reset">Reset</button>
+</div>
+
+<!-- ---------------- Coalition Builder ---------------- -->
+<div id="coalition-builder">
+  <div class="header-container">
+    <h3>Coalition Builder (user generated input)</h3>
+    <div class="tab-switcher">
+      <div class="tab-slider" id="tab-slider"></div>
+      <button class="tab-button active" onclick="switchTab(0)">Result</button>
+      <button class="tab-button" onclick="switchTab(1)">2024</button>
+    </div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="bar-container">
+    <div class="coalition-overlay" id="coalition-overlay"></div>
+    <div class="majority-line" title="Majority (316 seats)"></div>
+  </div>
+  <div class="counter" id="counter">0 / 630</div>
+  <div class="note"></div>
+</div>
+
+<script>
+const totalSeats = 150;
+const majority = 76;
+const parties = [
+  {name:'Smer', color:'#D82222', ge2024: 23.0, votes:17.8, final:0, lastElection: 42, threshold:5},
+  {name:'PS',   color:'#00BDFF', ge2024: 18.0, votes:22.6, final:0, lastElection: 32, threshold:5},
+  {name:'Hlas',   color:'#891139', ge2024: 14.7, votes:9.5, final:0, lastElection: 27, threshold:5},
+  {name:'SK+', color:'#A6A6A6', ge2024: 8.9, votes:7.9, final:0, lastElection: 16, threshold:5},
+  {name:'KDH',   color:'#FFE17D', ge2024: 6.8, votes:6.6, final:0, lastElection: 12, threshold:5},
+  {name:'SaS',   color:'#74FD00', ge2024: 6.3, votes:6.8, final:0, lastElection: 11, threshold:5},
+  {name:'SNS',   color:'#253A79', ge2024: 5.6, votes:3.9, final:0, lastElection: 10, threshold:5},
+  {name:'Rep', color:'#993300', ge2024: 4.8, votes:9.7, final:0, lastElection: 0, threshold:5},
+  {name:'MA',   color:'#F58120', ge2024: 4.4, votes:3.7, final:0, lastElection: 0, threshold:5},
+  {name:'Dem', color:'#50168E', ge2024: 2.9, votes:5.2, final:0, lastElection: 0, threshold:5},
+  {name:'SR',   color:'#034B9F', ge2024: 2.2, votes:3.6, final:0, lastElection: 0, threshold:5},
+  {name:'ĽSNS',    color:'#005222', ge2024: 0.8, votes:1.2, final:0, lastElection: 0, threshold:5}
+];
+
+const calculateBtn = document.getElementById('calculate');
+const resetBtn = document.getElementById('reset');
+const defaultVotes = parties.map(p => p.votes);
+
+/* --------- render table --------- */
+function renderTable(){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = parties.map((p,i)=>`
+    <tr>
+      <td class="party-column" style="--party-color: ${p.color}">${p.name}</td>
+      <td class="ge2024-column">${p.ge2024.toFixed(1)}%</td>
+      <td>
+        <div class="input-wrapper">
+          <input type="number" id="votes-${i}" value="${p.votes.toFixed(1)}" min="0" max="100" step="0.1">
+          <span class="percent-sign">%</span>
+        </div>
+      </td>
+      <td class="seats-column" id="seats-${i}">—</td>
+      <td class="change-column" id="change-${i}">—</td>
+    </tr>
+  `).join('');
+
+  const inputs = document.querySelectorAll('.input-wrapper input');
+  inputs.forEach((input, index) => {
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') { e.preventDefault(); if(inputs[index+1]) inputs[index+1].focus(); }
+    });
+    input.addEventListener('focus', () => { input.dataset.previous = input.value; input.value=''; input.style.borderColor='#cbd5e1'; });
+    input.addEventListener('blur', () => { 
+      if(input.value==='') input.value=input.dataset.previous||'0.0'; 
+      if(parseFloat(input.value) > 100) input.value='100';
+      input.style.borderColor = '#cbd5e1';
+    });
+    input.addEventListener('input', () => {
+      let val = parseFloat(input.value) || 0;
+      if(val>100){ input.value = 100; input.style.borderColor = 'red'; }
+      else input.style.borderColor = '#cbd5e1';
+      updateVoteTotal();
+      calculateBtn.style.background = '#ffa500';
+    });
+  });
+  updateVoteTotal();
+}
+
+function updateVoteTotal() {
+  let sum = 0;
+  parties.forEach((p,i)=>{
+    const val = parseFloat(document.getElementById(`votes-${i}`).value)||0;
+    sum += val;
+  });
+  document.getElementById('total-votes').textContent = sum.toFixed(1)+'%';
+}
+
+/* --------- calculation & update --------- */
+function calculate(){
+  parties.forEach((p,i)=>{ p.votes = parseFloat(document.getElementById(`votes-${i}`).value)||0; });
+
+  // threshold eligibility
+  const eligible = parties.filter(p => p.votes >= p.threshold);
+  if(eligible.length === 0){
+    // If nobody passes threshold, zero everyone
+    parties.forEach(p => p.final = 0);
+  } else {
+    const totalVotesEligible = eligible.reduce((s,p)=>s+p.votes,0);
+
+    eligible.forEach(p=>{
+      p.final = Math.floor((p.votes/totalVotesEligible)*totalSeats);
+    });
+
+    let assigned = eligible.reduce((s,p)=>s+p.final,0);
+    let remaining = totalSeats - assigned;
+    let remainders = eligible.map(p=>({
+      name:p.name,
+      remainder:(p.votes/totalVotesEligible)*totalSeats - p.final
+    })).sort((a,b)=>b.remainder - a.remainder);
+    for(let i=0;i<remaining;i++){
+      const name = remainders[i % remainders.length].name;
+      const index = parties.findIndex(x=>x.name===name);
+      parties[index].final++;
+    }
+
+parties.forEach(p => { if (p.votes < p.threshold) p.final = 0; });
+
+  }
+
+  // Update table (+/–)
+  parties.forEach((p,i)=>{
+    const changeCell = document.getElementById(`change-${i}`);
+    const diff = p.final - p.lastElection;
+    let text = "";
+    let color = "#000000";
+    if(diff > 0){ text = `+${diff}`; color = "#008500"; }
+    else if(diff < 0){ text = `${diff}`; color = "#bb0000"; }
+    else { text = "(=)"; color = "#555555"; }
+    changeCell.textContent = text;
+    changeCell.style.color = color;
+
+    document.getElementById(`seats-${i}`).textContent = p.final;
+  });
+
+  document.getElementById('total-seats').textContent = parties.reduce((s,p)=>s+p.final,0);
+  calculateBtn.style.background = '#008500';
+
+  renderCoalition();
+}
+
+resetBtn.addEventListener('click', ()=>{
+  parties.forEach((p,i)=>document.getElementById(`votes-${i}`).value = defaultVotes[i].toFixed(1));
+  calculate();
+});
+
+/* ---------------- Coalition Builder Script ---------------- */
+const totalSeatsCoalition = 150;
+let selected = [];
+let activeTab = 0;
+
+const datasets = [
+  null,
+  parties.map(p=>{ 
+    const staticGE = [
+      { name: "Smer", seats: 42, color: "#D82222" },
+      { name: "PS", seats: 32, color: "#00BDFF" },
+      { name: "Hlas", seats: 27, color: "#891139" },
+      { name: "SK+", seats: 16, color: "#A6A6A6" },
+      { name: "KDH", seats: 12, color: "#FFE17D" },
+      { name: "SaS", seats: 11, color: "#74FD00" },
+      { name: "SNS", seats: 10, color: "#253A79" },
+      { name: "Rep", seats: 0, color: "#993300" },
+      { name: "MA", seats: 0, color: "#F58120" },
+      { name: "Dem", seats: 0, color: "#50168E" },
+      { name: "SR", seats: 0, color: "#034B9F" },
+      { name: "ĽSNS", seats: 0,   color: "#005222" }
+    ].find(x=>x.name===p.name);
+    return { name: p.name, seats: staticGE ? staticGE.seats : 0, color: staticGE ? staticGE.color : p.color };
+  })
+];
+
+const legend = document.getElementById("legend");
+const overlay = document.getElementById("coalition-overlay");
+const counter = document.getElementById("counter");
+const slider = document.getElementById("tab-slider");
+
+function switchTab(index) {
+  activeTab=index;
+  document.querySelectorAll(".tab-button").forEach((btn,i)=>btn.classList.toggle("active",i===index));
+  slider.style.transform=`translateX(${index*100}%)`;
+  renderCoalition();
+}
+
+function toggleParty(name){
+  if(selected.includes(name)) selected = selected.filter(n=>n!==name);
+  else selected.push(name);
+  renderCoalition();
+}
+
+function renderCoalition(){
+  overlay.innerHTML = "";
+  const coalitionParties = (activeTab===0)
+    ? parties.map(p=>({ name: p.name, seats: Number(p.final || 0), color: p.color }))
+    : datasets[1];
+
+  // build legend
+  legend.innerHTML = "";
+  coalitionParties.forEach(p=>{
+    const item = document.createElement('div');
+    item.className = 'legend-item' + (selected.includes(p.name) ? ' active' : '');
+    item.innerHTML = `<div class="legend-box" style="background:${p.color}"></div> <strong>${p.name}</strong> ${p.seats}`;
+    item.onclick = ()=>toggleParty(p.name);
+    legend.appendChild(item);
+  });
+
+  // total selected & draw overlay
+  const totalSeatsSelected = selected.reduce((sum,name)=>{
+    const part = coalitionParties.find(x=>x.name===name);
+    return part ? sum + Number(part.seats || 0) : sum;
+  }, 0);
+
+  const widthPercent = (totalSeatsSelected / totalSeatsCoalition) * 100;
+  overlay.style.width = "0%";
+  overlay.innerHTML = "";
+  if (totalSeatsSelected > 0) {
+  // preserve user selection order instead of sorting by size
+  const ordered = selected
+    .map(name => coalitionParties.find(x => x.name === name))
+    .filter(Boolean);
+
+    ordered.forEach(p=>{
+      const seg = document.createElement('div');
+      seg.className = 'segment';
+      const flexBasisPercent = (p.seats / totalSeatsSelected) * 100;
+      seg.style.flexBasis = flexBasisPercent + "%";
+      seg.style.background = p.color;
+      seg.title = `${p.name}: ${p.seats}`;
+      overlay.appendChild(seg);
+    });
+  }
+  requestAnimationFrame(()=>{ overlay.style.width = widthPercent + "%"; });
+  counter.textContent = `${totalSeatsSelected} / ${totalSeatsCoalition}`;
+  counter.style.color = totalSeatsSelected >= majority ? "#2BA84A" : "#000";
+  document.querySelector(".note").innerHTML = `Majority = <b><i>${majority}</i></b> seats`;
+
+  document.querySelectorAll(".legend-item").forEach(el=>{
+    const name = el.querySelector("strong").textContent;
+    el.classList.toggle("active", selected.includes(name));
+  });
+}
+
+/* ---------------- Boot ---------------- */
+document.getElementById('calculate').addEventListener('click', calculate);
+renderTable();
+calculate(); // initial render (also calls renderCoalition & renderCoalitionList)
+</script>
+
+</body>
+</html>
