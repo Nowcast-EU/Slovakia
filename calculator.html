@@ -473,6 +473,58 @@ const calculateBtn = document.getElementById('calculate');
 const resetBtn = document.getElementById('reset');
 const defaultVotes = parties.map(p => p.votes);
 
+  // --- UNIVERSAL INPUT BEHAVIOUR FOR ALL CALCULATORS ---
+function attachInputBehaviour(calculate, updateVoteTotal) {
+  const inputs = document.querySelectorAll('.input-wrapper input');
+
+  inputs.forEach((input, index) => {
+    let originalValue = input.value;
+    let hasChanged = false;
+
+    input.addEventListener('focus', () => {
+      originalValue = input.value;
+      input.value = ''; // visually empty
+      hasChanged = false;
+    });
+
+    input.addEventListener('input', () => {
+      hasChanged = true;
+      updateVoteTotal();
+      const calcBtn = document.getElementById('calculate');
+      if (calcBtn) calcBtn.style.background = '#ffa500';
+    });
+
+    input.addEventListener('blur', () => {
+      if (input.value === '' || isNaN(parseFloat(input.value))) {
+        input.value = originalValue;
+      } else {
+        input.value = parseFloat(input.value).toFixed(1);
+      }
+      if (hasChanged && parseFloat(input.value) !== parseFloat(originalValue)) {
+        calculate();
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+
+        if (input.value === '' || isNaN(parseFloat(input.value))) {
+          input.value = originalValue;
+        } else {
+          input.value = parseFloat(input.value).toFixed(1);
+        }
+
+        if (inputs[index + 1]) {
+          inputs[index + 1].focus();
+        } else {
+          inputs[0].focus();
+        }
+      }
+    });
+  });
+}
+
 /* --------- render table --------- */
 function renderTable(){
   const tbody = document.getElementById('tbody');
@@ -491,25 +543,7 @@ function renderTable(){
     </tr>
   `).join('');
 
-  const inputs = document.querySelectorAll('.input-wrapper input');
-  inputs.forEach((input, index) => {
-    input.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') { e.preventDefault(); if(inputs[index+1]) inputs[index+1].focus(); }
-    });
-    input.addEventListener('focus', () => { input.dataset.previous = input.value; input.value=''; input.style.borderColor='#cbd5e1'; });
-    input.addEventListener('blur', () => { 
-      if(input.value==='') input.value=input.dataset.previous||'0.0'; 
-      if(parseFloat(input.value) > 100) input.value='100';
-      input.style.borderColor = '#cbd5e1';
-    });
-    input.addEventListener('input', () => {
-      let val = parseFloat(input.value) || 0;
-      if(val>100){ input.value = 100; input.style.borderColor = 'red'; }
-      else input.style.borderColor = '#cbd5e1';
-      updateVoteTotal();
-      calculateBtn.style.background = '#ffa500';
-    });
-  });
+  attachInputBehaviour(calculate, updateVoteTotal);
   updateVoteTotal();
 }
 
@@ -575,9 +609,13 @@ parties.forEach(p => { if (p.votes < p.threshold) p.final = 0; });
   renderCoalition();
 }
 
-resetBtn.addEventListener('click', ()=>{
-  parties.forEach((p,i)=>document.getElementById(`votes-${i}`).value = defaultVotes[i].toFixed(1));
-  calculate();
+document.getElementById('reset').addEventListener('click', ()=>{
+  parties.forEach((p,i)=>{
+    const input = document.getElementById(`votes-${i}`);
+    input.value = defaultVotes[i].toFixed(1);
+  });
+  updateVoteTotal();  // ✅ refresh footer totals immediately
+  calculate();         // ✅ recalc seats and coalition builder
 });
 
 /* ---------------- Coalition Builder Script ---------------- */
