@@ -713,10 +713,92 @@ tfoot td {
   }
 }
 
+ /* --- Wiki info button --- */
+.wiki-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #bbb;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+  text-decoration: none;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+.wiki-btn:hover {
+  background: #3366cc;
+}
+
+td.party-column {
+  position: relative;
+  padding-right: 22px !important;
+}
+
+/* --- Wiki hover card --- */
+.wiki-card {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  width: 280px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  padding: 10px 12px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #202122;
+  pointer-events: none;
+}
+.wiki-card.visible {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.wiki-card-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid #eee;
+}
+.wiki-card-title {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #000;
+}
+.wiki-card-extract {
+  color: #444;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wiki-card-loading {
+  color: #999;
+  font-style: italic;
+} 
+
 </style>
 </head>
 
 <body>
+<div id="wiki-card" class="wiki-card"></div>
 <div id="page-layout">
 <div id="left-column">
 <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px; margin-bottom:16px; width:100%;">
@@ -1286,6 +1368,103 @@ thrInputs.forEach((input, index) => {
 });
 }
 
+  // Wikipedia article slugs for each party
+const WIKI_PAGES = {
+  "Smer":  "Direction_%E2%80%93_Social_Democracy",
+  "PS":    "Progressive_Slovakia",
+  "Hlas":  "Voice_%E2%80%93_Social_Democracy",
+  "SK+":   "Slovakia_(political_party)",
+  "KDH":   "Christian_Democratic_Movement_(Slovakia)",
+  "SaS":   "Freedom_and_Solidarity",
+  "SNS":   "Slovak_National_Party",
+  "Rep":   "Republic_(Slovakia)",
+  "MA":    "Alliance_(Slovakia)",
+  "Dem":   "Democrats_(Slovakia)",
+  "SR":    "We_Are_Family_(Slovakia)",
+  "ĽSNS":  "People%27s_Party_Our_Slovakia"
+};
+
+/* ---- Wikipedia hover card ---- */
+(function() {
+  const card  = document.getElementById('wiki-card');
+  const cache = {};
+  let   activeBtn = null;
+
+  async function fetchSummary(slug) {
+    if (cache[slug]) return cache[slug];
+    try {
+      const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`);
+      const data = await res.json();
+      cache[slug] = data;
+      return data;
+    } catch(e) {
+      cache[slug] = null;
+      return null;
+    }
+  }
+
+  function positionCard(btn) {
+    const rect = btn.getBoundingClientRect();
+    const margin = 8;
+    const cardW = 280;
+    let left = rect.right + margin;
+    if (left + cardW > window.innerWidth - margin) left = rect.left - cardW - margin;
+    if (left < margin) left = margin;
+    let top = rect.top;
+    card.style.left = left + 'px';
+    card.style.top  = top  + 'px';
+    requestAnimationFrame(() => {
+      const ch = card.offsetHeight;
+      if (top + ch > window.innerHeight - margin) top = window.innerHeight - ch - margin;
+      if (top < margin) top = margin;
+      card.style.top = top + 'px';
+    });
+  }
+
+  function showCard(btn, slug) {
+    activeBtn = btn;
+    card.className = 'wiki-card visible';
+    card.innerHTML = '<span class="wiki-card-loading">Loading…</span>';
+    positionCard(btn);
+
+    fetchSummary(slug).then(data => {
+      if (activeBtn !== btn) return;
+      if (!data || data.type === 'disambiguation') {
+        card.innerHTML = '<span class="wiki-card-loading">No preview available.</span>';
+        return;
+      }
+      const thumb = data.thumbnail
+        ? `<img class="wiki-card-thumb" src="${data.thumbnail.source}" alt="">`
+        : '';
+      card.innerHTML = `
+        ${thumb}
+        <div class="wiki-card-body">
+          <div class="wiki-card-title">${data.title}</div>
+          <div class="wiki-card-extract">${data.extract || ''}</div>
+        </div>`;
+      positionCard(btn);
+    });
+  }
+
+  function hideCard() {
+    activeBtn = null;
+    card.className = 'wiki-card';
+    card.innerHTML = '';
+  }
+
+  document.addEventListener('mouseover', e => {
+    const btn = e.target.closest('.wiki-btn');
+    if (btn && btn.dataset.slug) showCard(btn, btn.dataset.slug);
+  });
+  document.addEventListener('mouseout', e => {
+    const btn = e.target.closest('.wiki-btn');
+    if (btn) hideCard();
+  });
+  window.addEventListener('scroll', () => {
+    if (activeBtn) positionCard(activeBtn);
+  }, true);
+})();
+
 // Full party name aliases
 const PARTY_ALIASES = {
   "Smer": "CDU/CSU",
@@ -1317,7 +1496,7 @@ tbody.innerHTML = parties.map((p, i) => {
 
   let row = `
     <tr>
-      <td class="party-column" style="--party-color:${p.color}">${p.name}</td>
+      <td class="party-column" style="--party-color:${p.color}">${p.name}${WIKI_PAGES[p.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[p.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[p.name]}" title="Wikipedia">i</a>` : ''}</td>
       <td class="ge2024-column">${p.ge2024.toFixed(1)}%</td>
       <td>
         ${p.name === "OTH" ? `
@@ -1345,7 +1524,7 @@ tbody.innerHTML = parties.map((p, i) => {
     if (oth) {
       row += `
         <tr>
-          <td class="party-column" style="--party-color:${oth.color}">${oth.name}</td>
+         <td class="party-column" style="--party-color:${oth.color}">${oth.name}${WIKI_PAGES[oth.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[oth.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[oth.name]}" title="Wikipedia">i</a>` : ''}</td>
           <td class="ge2024-column">${oth.ge2024.toFixed(1)}%</td>
           <td>
             <div class="input-wrapper">
