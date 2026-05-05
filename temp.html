@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <!-- Primary Meta Tags -->
-<title>🇩🇪 Interactive Seat Calculator | Germany</title>
-<meta name="title" content="🇩🇪 Interactive Seat Calculator | Germany">
+<title>🇸🇰 Interactive Seat Calculator | Slovakia</title>
+<meta name="title" content="🇸🇰 Interactive Seat Calculator | Slovakia">
 <meta name="description" content="">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://nowcast-eu.github.io/Germany/calculator.html">
-<meta property="og:title" content="🇩🇪 Interactive Seat Calculator | Germany">
+<meta property="og:url" content="https://nowcast-eu.github.io/Slovakia/calculator.html">
+<meta property="og:title" content="🇸🇰 Interactive Seat Calculator | Slovakia">
 <meta property="og:description" content="">
-<meta property="og:image" content="https://nowcast-eu.github.io/Germany/thumbnail.png">
+<meta property="og:image" content="https://nowcast-eu.github.io/Slovakia/thumbnail.png">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:url" content="https://nowcast-eu.github.io/Germany/calculator.html">
-<meta name="twitter:title" content="🇩🇪 Interactive Seat Calculator | Germany">
+<meta name="twitter:url" content="https://nowcast-eu.github.io/Slovakia/calculator.html">
+<meta name="twitter:title" content="🇸🇰 Interactive Seat Calculator | Slovakia">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://nowcast-eu.github.io/Germany/thumbnail.png">
+<meta name="twitter:image" content="https://nowcast-eu.github.io/Slovakia/thumbnail.png">
 
 <link rel="icon" type="image/png" href="https://nowcast-eu.github.io/Germany/EU_favicon.png">
 
@@ -720,11 +720,11 @@ tfoot td {
 <div id="page-layout">
 <div id="left-column">
 <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px; margin-bottom:16px; width:100%;">
-  <img src="https://raw.githubusercontent.com/Nowcast-EU/Germany/refs/heads/main/DE_logo.png"
+  <img src="https://raw.githubusercontent.com/Nowcast-EU/Slovakia/refs/heads/main/DE_logo.png"
        alt="Nowcast UK logo"
        style="height:clamp(40px, 8vw, 72px); width:auto; flex-shrink:0;">
   <div style="display:flex; flex-direction:column; justify-content:center; min-width:0; overflow:hidden;">
-    <h1 style="margin:0 0 2px 0; white-space:nowrap; font-size:clamp(0.8rem, 2.5vw, 2rem); text-align:left;">Germany | Interactive Seat Calculator</h1>
+    <h1 style="margin:0 0 2px 0; white-space:nowrap; font-size:clamp(0.8rem, 2.5vw, 2rem); text-align:left;">Slovakia | Interactive Seat Calculator</h1>
     <h2 class="subtitle" style="margin:0; white-space:nowrap; font-size:clamp(0.65rem, 1.8vw, 1.3rem); text-align:left;">
       For the latest polling & projections, visit 
       <a href="https://x.com/Nowcast_EU" target="_blank"><em>Nowcast EU</em></a>
@@ -737,10 +737,10 @@ tfoot td {
   <thead>
     <tr>
       <th>Party</th>
-      <th>2025</th>
+      <th>2023</th>
       <th>Votes (%)</th>
       <th>Seats</th>
-      <th>+/- 2025</th>
+      <th>+/- 2023</th>
     </tr>
   </thead>
   <tbody id="tbody"></tbody>
@@ -772,7 +772,7 @@ tfoot td {
   <div class="tab-switcher">
     <div class="tab-pill" id="tab-pill"></div>
     <button class="tab-btn active" id="tab-result">Result</button>
-    <button class="tab-btn" id="tab-2023">2025</button>
+    <button class="tab-btn" id="tab-2023">2023</button>
   </div>
 </div>
 
@@ -781,8 +781,8 @@ tfoot td {
     <div class="coalition-overlay" id="coalition-overlay"></div>
     <div class="majority-line" title="Majority (326 seats)"></div>
   </div>
-  <div class="counter" id="counter">0 / 650</div>
-  <div class="note">Majority = 326 seats</div>
+  <div class="counter" id="counter">0 / 150</div>
+  <div class="note">Majority = 75 seats</div>
 </div>
 
 </div><!-- end left-column -->
@@ -2443,7 +2443,7 @@ document.addEventListener('DOMContentLoaded', () => calculate());
 
 
 /* ---- Coalition Builder ---- */
-const COAL_TOTAL=630,COAL_MAJ=316;
+const COAL_TOTAL=150,COAL_MAJ=75;
 let selected=[];
 const legend=document.getElementById("legend"),overlay=document.getElementById("coalition-overlay"),counter=document.getElementById("counter");
 
