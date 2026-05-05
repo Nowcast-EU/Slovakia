@@ -1487,7 +1487,7 @@ const WIKI_PAGES = {
     const btn = e.target.closest('.wiki-btn');
     if (btn && didLongPress) {
       e.preventDefault(); // stop the tap-through after a long press
-      setTimeout(hideCard, 2500); // auto-hide after 2.5s
+      document.addEventListener('touchstart', hideCard, { once: true });
     }
   });
 
