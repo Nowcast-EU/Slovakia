@@ -2306,7 +2306,7 @@ function calculatePR() {
   // Apply 5% threshold OR 3+ constituency wins (Grundmandatsklausel)
   const eligible = parties.filter(p =>
     p.name !== "OTH" &&
-    (votes[p.name] >= PR_THRESHOLD || constituencyWins[p.name] >= 3)
+    (votes[p.name] >= PR_THRESHOLD || constituencyWins[p.name] >= 50)
   );
 
   const prSeats = {};
