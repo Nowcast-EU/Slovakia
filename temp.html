@@ -720,7 +720,7 @@ tfoot td {
 <div id="page-layout">
 <div id="left-column">
 <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px; margin-bottom:16px; width:100%;">
-  <img src="https://raw.githubusercontent.com/Nowcast-EU/Slovakia/refs/heads/main/DE_logo.png"
+  <img src="https://raw.githubusercontent.com/Nowcast-EU/Slovakia/refs/heads/main/SK_logo.png"
        alt="Nowcast UK logo"
        style="height:clamp(40px, 8vw, 72px); width:auto; flex-shrink:0;">
   <div style="display:flex; flex-direction:column; justify-content:center; min-width:0; overflow:hidden;">
@@ -785,7 +785,7 @@ tfoot td {
 <div id="right-column">
   <!-- Constituency-level results -->
 <div id="constituency-section">
-  <h3>Constituency Vote Results (User Generated)</h3>
+  <h3>District-Level Results (User Generated)</h3>
   <div class="search-container">
     <input type="text" id="constituency-search" placeholder="Search for a constituency...">
     <ul id="constituency-dropdown" class="dropdown"></ul>
@@ -2166,7 +2166,7 @@ helpBtn.addEventListener("click", () => {
   }
   function sty(lu){ return function(f){ var w=lu[f.properties.name]; return {fillColor:w?(PARTY_COLORS[w]||'#ccc'):'#ccc',fillOpacity:0.99,color:'#fff',weight:0.6}; }; }
   function initMap() {
-    var defaultZoom = window.innerWidth < 768 ? 5.5 : 7;
+    var defaultZoom = window.innerWidth < 768 ? 6.3 : 7;
     map = L.map('constituency-map',{
     center:[48.7, 19.7],
     zoom:defaultZoom,
