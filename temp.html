@@ -672,14 +672,14 @@ tfoot td {
 #constituency-map {
   width: 100%;
   max-width: 100%;        /* add this */
-  height: 300px;
+  height: 225px;
   box-sizing: border-box; /* add this */
   overflow: hidden;       /* add this */
 }
 
 @media (min-width: 1024px) {
   #constituency-map {
-    height: 400px;
+    height: 300px;
     max-width: 700px;
     margin: 0 auto;
   }
@@ -2168,14 +2168,14 @@ helpBtn.addEventListener("click", () => {
   function initMap() {
     var defaultZoom = window.innerWidth < 768 ? 5.5 : 7;
     map = L.map('constituency-map',{
-    center:[48.0, 19.7],
+    center:[48.3, 19.7],
     zoom:defaultZoom,
     zoomSnap: 0,
     minZoom:4,
     maxZoom:12,
     maxBounds:[
-        [43.0, 9.7],
-        [53.0, 29.7]
+        [43.3, 9.7],
+        [53.3, 29.7]
     ],
     maxBoundsViscosity: 1.0
 });
