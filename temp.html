@@ -1496,7 +1496,7 @@ tbody.innerHTML = parties.map((p, i) => {
 
   let row = `
     <tr>
-      <td class="party-column" style="--party-color:${p.color}">${p.name}${WIKI_PAGES[p.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[p.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[p.name]}" title="Wikipedia">i</a>` : ''}</td>
+      <td class="party-column" style="--party-color:${p.color}">${p.name}${WIKI_PAGES[p.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[p.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[p.name]}">i</a>` : ''}</td>
       <td class="ge2024-column">${p.ge2024.toFixed(1)}%</td>
       <td>
         ${p.name === "OTH" ? `
@@ -1524,7 +1524,7 @@ tbody.innerHTML = parties.map((p, i) => {
     if (oth) {
       row += `
         <tr>
-         <td class="party-column" style="--party-color:${oth.color}">${oth.name}${WIKI_PAGES[oth.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[oth.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[oth.name]}" title="Wikipedia">i</a>` : ''}</td>
+         <td class="party-column" style="--party-color:${oth.color}">${oth.name}${WIKI_PAGES[oth.name] ? `<a class="wiki-btn" href="https://en.wikipedia.org/wiki/${WIKI_PAGES[oth.name]}" target="_blank" rel="noopener" data-slug="${WIKI_PAGES[oth.name]}">i</a>` : ''}</td>
           <td class="ge2024-column">${oth.ge2024.toFixed(1)}%</td>
           <td>
             <div class="input-wrapper">
