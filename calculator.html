@@ -795,9 +795,8 @@ td.party-column {
 } 
 
   @media (max-width: 768px) {
-.wiki-card-thumb {
-  width: 50px;
-  height: 64px;
+.wiki-card {
+  width: 240px;
   }
 }
 
@@ -1459,6 +1458,7 @@ const WIKI_PAGES = {
     card.innerHTML = '';
   }
 
+// --- Desktop: hover ---
   document.addEventListener('mouseover', e => {
     const btn = e.target.closest('.wiki-btn');
     if (btn && btn.dataset.slug) showCard(btn, btn.dataset.slug);
@@ -1467,6 +1467,38 @@ const WIKI_PAGES = {
     const btn = e.target.closest('.wiki-btn');
     if (btn) hideCard();
   });
+
+  // --- Mobile: long-press shows card, tap navigates, context menu suppressed ---
+  let pressTimer = null;
+  let didLongPress = false;
+
+  document.addEventListener('touchstart', e => {
+    const btn = e.target.closest('.wiki-btn');
+    if (!btn || !btn.dataset.slug) return;
+    didLongPress = false;
+    pressTimer = setTimeout(() => {
+      didLongPress = true;
+      showCard(btn, btn.dataset.slug);
+    }, 500);
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    clearTimeout(pressTimer);
+    const btn = e.target.closest('.wiki-btn');
+    if (btn && didLongPress) {
+      e.preventDefault(); // stop the tap-through after a long press
+      setTimeout(hideCard, 2500); // auto-hide after 2.5s
+    }
+  });
+
+  document.addEventListener('touchmove', () => {
+    clearTimeout(pressTimer);
+  }, { passive: true });
+
+  document.addEventListener('contextmenu', e => {
+    if (e.target.closest('.wiki-btn')) e.preventDefault();
+  });
+
   window.addEventListener('scroll', () => {
     if (activeBtn) positionCard(activeBtn);
   }, true);
