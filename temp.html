@@ -824,7 +824,7 @@ tfoot td {
       <tr>
         <th>Party</th>
         <th>Concentration</th>
-        <th>Incumbents</th>
+        <th>Threshold</th>
       </tr>
     </thead>
     <tbody id="concentration-body"></tbody>
@@ -1125,23 +1125,7 @@ const VOTE_CONCENTRATION = {
   "OTH": 0.00
 };
 
-  const INCUMBENT_STRENGTH = {
-  "Smer": 0.00,
-  "PS": 0.00,
-  "Hlas": 0.00,
-  "SK+": 0.00,
-  "KDH": 0.00,
-  "SaS": 0.00,
-  "SNS": 0.00,
-  "Rep": 0.00,
-  "MA": 0.00,
-  "Dem": 0.00,
-  "SR": 0.00,
-  "ĽSNS": 0.00
-};
-
 const VOTE_CONCENTRATION_DEFAULTS = { ...VOTE_CONCENTRATION };
-const INCUMBENT_STRENGTH_DEFAULTS = { ...INCUMBENT_STRENGTH };
 
   const CONC_DISPLAY_OFFSET = {
   "Smer": 0.0,
@@ -1158,21 +1142,12 @@ const INCUMBENT_STRENGTH_DEFAULTS = { ...INCUMBENT_STRENGTH };
   "ĽSNS": 0.0
 };
 
-  // display offsets for the incumbent input boxes (display only)
-const INC_DISPLAY_OFFSET = {
-  "Smer": 0.0,
-  "PS": 0.0,
-  "Hlas": 0.0,
-  "SK+": 0.0,
-  "KDH": 0.0,
-  "SaS": 0.0,
-  "SNS": 0.0,
-  "Rep": 0.0,
-  "MA": 0.0,
-  "Dem": 0.0,
-  "SR": 0.0,
-  "ĽSNS": 0.0
+  // Replace INCUMBENT_STRENGTH, INCUMBENT_STRENGTH_DEFAULTS, INC_DISPLAY_OFFSET with:
+const PARTY_THRESHOLD = {
+  "Smer": 5, "PS": 5, "Hlas": 5, "SK+": 5, "KDH": 5,
+  "SaS": 5, "SNS": 5, "Rep": 5, "MA": 5, "Dem": 5, "SR": 5, "ĽSNS": 5
 };
+const PARTY_THRESHOLD_DEFAULTS = { ...PARTY_THRESHOLD };
 
   const CONC_EDITABLE = ["Smer", "PS", "Hlas", "SK+", "KDH", "SaS", "SNS", "Rep", "MA", "Dem", "SR", "ĽSNS"];
 
@@ -1200,16 +1175,16 @@ function renderConcentrationTable() {
       </td>
 
       <!-- Incumbent strength column -->
-      <td>
-        <input type="number"
-          id="inc-${p}"
-          value="${(((Number(INCUMBENT_STRENGTH[p] || 0) * 100) + (INC_DISPLAY_OFFSET[p] || 0))).toFixed(1)}"
-          step="0.5"
-          min="-100"
-          max="100"
-          style="width:70px; text-align:center;"
-        >
-      </td>
+<td>
+  <input type="number"
+    id="thr-${p}"
+    value="${PARTY_THRESHOLD[p].toFixed(1)}"
+    step="0.5"
+    min="0"
+    max="100"
+    style="width:70px; text-align:center;"
+  >
+</td>
     `;
 
     tbody.appendChild(row);
@@ -1223,7 +1198,6 @@ function renderConcentrationTable() {
 
 function bindConcentrationInputs() {
   const concInputs = CONC_EDITABLE.map(p => document.getElementById(`conc-${p}`));
-  const incInputs  = CONC_EDITABLE.map(p => document.getElementById(`inc-${p}`));
 
   // --- Concentration inputs (existing behaviour + display offset handling) ---
   concInputs.forEach((input, index) => {
@@ -1271,50 +1245,45 @@ function bindConcentrationInputs() {
     });
   });
 
-  // --- Incumbent strength inputs (must ONLY update INCUMBENT_STRENGTH) ---
-  incInputs.forEach((input, index) => {
-    let originalValue = input.value;
+const thrInputs = CONC_EDITABLE.map(p => document.getElementById(`thr-${p}`));
 
-    input.addEventListener("focus", () => {
-      originalValue = input.value;
-      input.dataset.displayValue = originalValue;
-      input.value = "";
-    });
+thrInputs.forEach((input, index) => {
+  let originalValue = input.value;
 
-    input.addEventListener("input", () => {
-      const raw = input.value;
-      if (raw === "-") return;
-      let val = parseFloat(raw);
-      if (isNaN(val)) return;
-      val = clampConcentration(val);
-
-      const party = input.id.replace("inc-", "");
-      INCUMBENT_STRENGTH[party] = (val - (INC_DISPLAY_OFFSET[party] || 0)) / 100;
-
-      calculate();
-    });
-
-    input.addEventListener("blur", () => {
-      if (input.value === "" || input.value === "-" || isNaN(parseFloat(input.value))) {
-        input.value = originalValue;
-        return;
-      }
-      let val = clampConcentration(parseFloat(input.value));
-      input.value = val.toFixed(1);
-
-      const party = input.id.replace("inc-", "");
-      INCUMBENT_STRENGTH[party] = (val - (INC_DISPLAY_OFFSET[party] || 0)) / 100;
-
-      calculate();
-    });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (incInputs[index + 1]) incInputs[index + 1].focus(); else incInputs[0].focus();
-      }
-    });
+  input.addEventListener("focus", () => {
+    originalValue = input.value;
+    input.value = "";
   });
+
+  input.addEventListener("input", () => {
+    const val = parseFloat(input.value);
+    if (!isNaN(val)) {
+      const party = input.id.replace("thr-", "");
+      PARTY_THRESHOLD[party] = Math.max(0, Math.min(100, val));
+      calculate();
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    if (input.value === "" || isNaN(parseFloat(input.value))) {
+      input.value = originalValue;
+      return;
+    }
+    const val = Math.max(0, Math.min(100, parseFloat(input.value)));
+    input.value = val.toFixed(1);
+    const party = input.id.replace("thr-", "");
+    PARTY_THRESHOLD[party] = val;
+    calculate();
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (thrInputs[index + 1]) thrInputs[index + 1].focus();
+      else thrInputs[0].focus();
+    }
+  });
+});
 }
 
 // Full party name aliases
@@ -1645,10 +1614,10 @@ function calculatePR() {
   });
 
   // Apply 5% threshold OR 3+ constituency wins (Grundmandatsklausel)
-  const eligible = parties.filter(p =>
-    p.name !== "OTH" &&
-    (votes[p.name] >= PR_THRESHOLD || constituencyWins[p.name] >= 50)
-  );
+const eligible = parties.filter(p =>
+  p.name !== "OTH" &&
+  (votes[p.name] >= (PARTY_THRESHOLD[p.name] ?? PR_THRESHOLD) || constituencyWins[p.name] >= 50)
+);
 
   const prSeats = {};
   parties.forEach(p => prSeats[p.name] = 0);
@@ -1684,10 +1653,10 @@ document.getElementById('reset').addEventListener('click', () => {
     if (input) input.value = DEFAULTS[p.name].toFixed(1);
   });
 
-// ---- Reset concentration & incumbent strength ----
+// ---- Reset concentration & threshold ----
   CONC_EDITABLE.forEach(p => {
     VOTE_CONCENTRATION[p] = VOTE_CONCENTRATION_DEFAULTS[p];
-    INCUMBENT_STRENGTH[p] = INCUMBENT_STRENGTH_DEFAULTS[p];
+    PARTY_THRESHOLD[p] = PARTY_THRESHOLD_DEFAULTS[p];
   });
 
   // ---- Reset display values for settings panel ----
@@ -1697,9 +1666,9 @@ document.getElementById('reset').addEventListener('click', () => {
       concInput.value = ((VOTE_CONCENTRATION_DEFAULTS[p] * 100) + (CONC_DISPLAY_OFFSET[p] || 0)).toFixed(1);
     }
 
-    const incInput = document.getElementById(`inc-${p}`);
-    if (incInput) {
-      incInput.value = ((INCUMBENT_STRENGTH_DEFAULTS[p] * 100) + (INC_DISPLAY_OFFSET[p] || 0)).toFixed(1);
+    const thrInput = document.getElementById(`thr-${p}`);
+    if (thrInput) {
+      thrInput.value = PARTY_THRESHOLD_DEFAULTS[p].toFixed(1);
     }
   });
 
