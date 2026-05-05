@@ -1478,14 +1478,6 @@ function applyVoteConcentrationToRow(row, baseNat, conc) {
     if (!isFinite(multiplier)) multiplier = 1;
     multiplier = Math.max(0, multiplier);
 
-    // --- incumbent strength (only for incumbent party) ---
-    const incumbentParty = CONSTITUENCY_INCUMBENTS[row.name];
-    const incVal = Number(INCUMBENT_STRENGTH[p] ?? 0); // default 0 if missing
-    if (p === incumbentParty && incVal !== 0) {
-      multiplier = multiplier * (1 + incVal);
-      if (!isFinite(multiplier)) multiplier = Math.max(0, Number(multiplier) || 0);
-    }
-
     out[p] = local * multiplier;
   });
   return out;
