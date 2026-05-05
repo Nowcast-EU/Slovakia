@@ -2088,16 +2088,16 @@ helpBtn.addEventListener("click", () => {
   }
   function sty(lu){ return function(f){ var w=lu[f.properties.name]; return {fillColor:w?(PARTY_COLORS[w]||'#ccc'):'#ccc',fillOpacity:0.99,color:'#fff',weight:0.6}; }; }
   function initMap() {
-    var defaultZoom = window.innerWidth < 768 ? 5.5 : 8;
+    var defaultZoom = window.innerWidth < 768 ? 5.5 : 7;
     map = L.map('constituency-map',{
-    center:[49.4, 19.4],
+    center:[47.4, 19.4],
     zoom:defaultZoom,
     zoomSnap: 0,
     minZoom:4,
     maxZoom:12,
     maxBounds:[
-        [44.4, 9.4],
-        [54.4, 29.4]
+        [42.4, 9.4],
+        [52.4, 29.4]
     ],
     maxBoundsViscosity: 1.0
 });
