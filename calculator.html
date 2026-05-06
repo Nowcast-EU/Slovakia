@@ -2389,7 +2389,7 @@ filterControl.onAdd = function () {
   const options = boundaryTypes.map(t =>
     `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`
   ).join('');
-  div.innerHTML = `<select id="boundary-filter"><option value="all">All</option>${options}</select>`;
+  div.innerHTML = `<select id="boundary-filter">${options}</select>`;
   L.DomEvent.disableClickPropagation(div);
   L.DomEvent.disableScrollPropagation(div);
   return div;
@@ -2401,7 +2401,7 @@ document.getElementById('boundary-filter').addEventListener('change', function (
   const selected = this.value;
   layer.eachLayer(function (l) {
     const type = l.feature.properties.boundarytype;
-    if (selected === 'all' || type === selected) {
+     if (type === selected) {
       map.addLayer(l);
     } else {
       map.removeLayer(l);
