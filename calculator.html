@@ -2419,7 +2419,7 @@ const filterControl = L.control({ position: 'topright' });
 filterControl.onAdd = function () {
   const div = L.DomUtil.create('div', 'boundary-filter-control');
 const options = boundaryTypes.map(t =>
-  `<option value="${t}" ${t === 'district' ? 'selected' : ''}>
+  `<option value="${t}" ${t === 'District' ? 'selected' : ''}>
     ${t.charAt(0).toUpperCase() + t.slice(1)}
   </option>`
 ).join('');
@@ -2430,7 +2430,7 @@ const options = boundaryTypes.map(t =>
 };
 filterControl.addTo(map);
 
-    const defaultType = 'district';
+    const defaultType = 'District';
 
 layer.eachLayer(function (l) {
   const type = l.feature.properties.boundarytype;
