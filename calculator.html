@@ -800,6 +800,24 @@ td.party-column {
   }
 }
 
+  .boundary-filter-control {
+  background: white;
+  padding: 6px 8px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.boundary-filter-control select {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  font-size: 13px;
+  font-family: Inter, system-ui, sans-serif;
+}
+
 </style>
 </head>
 
@@ -2343,6 +2361,7 @@ helpBtn.addEventListener("click", () => {
     });
     return lu;
   }
+  const boundaryTypes = [...new Set(GJ.features.map(f => f.properties.boundarytype))];
   function sty(lu){ return function(f){ var w=lu[f.properties.name]; return {fillColor:w?(PARTY_COLORS[w]||'#ccc'):'#ccc',fillOpacity:0.99,color:'#fff',weight:0.6}; }; }
   function initMap() {
     var defaultZoom = window.innerWidth < 768 ? 6.3 : 7;
@@ -2373,6 +2392,33 @@ mouseout: function(e) {
     }}).addTo(map);
     window.updateMapColors=function(){if(layer)layer.setStyle(sty(winners()));};
   }
+
+    // Build boundary filter dropdown
+const filterControl = L.control({ position: 'topright' });
+filterControl.onAdd = function () {
+  const div = L.DomUtil.create('div', 'boundary-filter-control');
+  const options = boundaryTypes.map(t =>
+    `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`
+  ).join('');
+  div.innerHTML = `<select id="boundary-filter"><option value="all">All</option>${options}</select>`;
+  L.DomEvent.disableClickPropagation(div);
+  L.DomEvent.disableScrollPropagation(div);
+  return div;
+};
+filterControl.addTo(map);
+
+// Filter logic
+document.getElementById('boundary-filter').addEventListener('change', function () {
+  const selected = this.value;
+  layer.eachLayer(function (l) {
+    const type = l.feature.properties.boundarytype;
+    if (selected === 'all' || type === selected) {
+      map.addLayer(l);
+    } else {
+      map.removeLayer(l);
+    }
+  });
+});
 
 // After initMap(), add:
 window.addEventListener('resize', function() {
