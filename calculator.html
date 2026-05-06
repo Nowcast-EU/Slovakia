@@ -2436,6 +2436,18 @@ filterControl.onAdd = function () {
 
 filterControl.addTo(map);
 
+    layer = L.geoJSON(GJ,{style:sty(winners()),onEachFeature:function(f,l){
+      l.on({
+        mouseover:function(e){e.target.setStyle({weight:2.5,color:'#222',fillOpacity:0.97});e.target.bringToFront();var w=winners()[f.properties.name]||'?';l.bindTooltip('<strong>'+f.properties.name+'</strong><br>'+((window.PARTY_ALIASES&&window.PARTY_ALIASES[w])||w),{sticky:true,className:'map-tooltip-clean'}).openTooltip();},
+
+mouseout: function(e) {
+    e.target.setStyle(sty(winners())(f));
+    e.target.closeTooltip();
+},
+        click:function(){var el=document.getElementById('constituency-search');if(el){el.value=f.properties.name;showConstituencyResults(f.properties.name);document.getElementById('constituency-section').scrollIntoView({behavior:'smooth'});}}
+      });
+    }}).addTo(map);
+
 // Set default visible layer type
 const defaultType = boundaryTypes[0];
 
@@ -2462,17 +2474,6 @@ document.getElementById('boundary-filter').addEventListener('change', function (
   });
 });
 
-    layer = L.geoJSON(GJ,{style:sty(winners()),onEachFeature:function(f,l){
-      l.on({
-        mouseover:function(e){e.target.setStyle({weight:2.5,color:'#222',fillOpacity:0.97});e.target.bringToFront();var w=winners()[f.properties.name]||'?';l.bindTooltip('<strong>'+f.properties.name+'</strong><br>'+((window.PARTY_ALIASES&&window.PARTY_ALIASES[w])||w),{sticky:true,className:'map-tooltip-clean'}).openTooltip();},
-
-mouseout: function(e) {
-    e.target.setStyle(sty(winners())(f));
-    e.target.closeTooltip();
-},
-        click:function(){var el=document.getElementById('constituency-search');if(el){el.value=f.properties.name;showConstituencyResults(f.properties.name);document.getElementById('constituency-section').scrollIntoView({behavior:'smooth'});}}
-      });
-    }}).addTo(map);
     window.updateMapColors=function(){if(layer)layer.setStyle(sty(winners()));};
   }
 
