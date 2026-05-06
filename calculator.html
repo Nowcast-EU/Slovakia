@@ -2414,23 +2414,30 @@ helpBtn.addEventListener("click", () => {
 });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(map);
 
-     // Build boundary filter dropdown
+// Build boundary filter dropdown
 const filterControl = L.control({ position: 'topright' });
+
 filterControl.onAdd = function () {
   const div = L.DomUtil.create('div', 'boundary-filter-control');
-const options = boundaryTypes.map(t =>
-  `<option value="${t}" ${t === 'District' ? 'selected' : ''}>
-    ${t.charAt(0).toUpperCase() + t.slice(1)}
-  </option>`
-).join('');
+
+  const options = boundaryTypes.map((t, i) =>
+    `<option value="${t}" ${i === 0 ? 'selected' : ''}>
+      ${t.charAt(0).toUpperCase() + t.slice(1)}
+    </option>`
+  ).join('');
+
   div.innerHTML = `<select id="boundary-filter">${options}</select>`;
+
   L.DomEvent.disableClickPropagation(div);
   L.DomEvent.disableScrollPropagation(div);
+
   return div;
 };
+
 filterControl.addTo(map);
 
-    const defaultType = 'District';
+// Set default visible layer type
+const defaultType = boundaryTypes[0];
 
 layer.eachLayer(function (l) {
   const type = l.feature.properties.boundarytype;
@@ -2443,15 +2450,17 @@ layer.eachLayer(function (l) {
 // Filter logic
 document.getElementById('boundary-filter').addEventListener('change', function () {
   const selected = this.value;
+
   layer.eachLayer(function (l) {
     const type = l.feature.properties.boundarytype;
-     if (type === selected) {
+
+    if (type === selected) {
       map.addLayer(l);
     } else {
       map.removeLayer(l);
     }
   });
-});   
+});
 
     layer = L.geoJSON(GJ,{style:sty(winners()),onEachFeature:function(f,l){
       l.on({
